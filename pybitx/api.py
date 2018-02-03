@@ -80,14 +80,14 @@ class BitX:
         else:
             return result
 
-    def get_ticker(self, kind='auth'):
+    def get_ticker(self, kind='basic'):
         params = {'pair': self.pair}
         return self.api_request('ticker', params, kind=kind)
 
-    def get_all_tickers(self, kind='auth'):
+    def get_all_tickers(self, kind='basic'):
         return self.api_request('tickers', None, kind=kind)
 
-    def get_order_book(self, limit=None, kind='auth'):
+    def get_order_book(self, limit=None, kind='basic'):
         params = {'pair': self.pair}
         orders = self.api_request('orderbook', params, kind=kind)
         if limit is not None:
@@ -95,7 +95,7 @@ class BitX:
             orders['asks'] = orders['asks'][:limit]
         return orders
 
-    def get_order_book_frame(self, limit=None, kind='auth'):
+    def get_order_book_frame(self, limit=None, kind='basic'):
         q = self.get_order_book(limit, kind)
         asks = pd.DataFrame(q['asks'])
         bids = pd.DataFrame(q['bids'])
@@ -103,14 +103,14 @@ class BitX:
         df = pd.DataFrame(pd.concat([asks, bids], axis=1).values, columns=index)
         return df
 
-    def get_trades(self, limit=None, kind='auth'):
+    def get_trades(self, limit=None, kind='basic'):
         params = {'pair': self.pair}
         trades = self.api_request('trades', params, kind=kind)
         if limit is not None:
             trades['trades'] = trades['trades'][:limit]
         return trades
 
-    def get_trades_frame(self, limit=None, kind='auth'):
+    def get_trades_frame(self, limit=None, kind='basic'):
         trades = self.get_trades(limit, kind)
         df = pd.DataFrame(trades['trades'])
         df.index = pd.to_datetime(df.timestamp * 1e-3, unit='s')
